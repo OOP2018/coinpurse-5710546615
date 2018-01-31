@@ -5,7 +5,7 @@ package coinpurse;
  * 
  * @author Visurt Anuttivong
  */
-public class Coin implements Comparable<Coin> {
+public class Coin implements Valuable {
 
 	private double value;
 	private String currency;
@@ -55,20 +55,6 @@ public class Coin implements Comparable<Coin> {
 		if (value == c.getValue() && currency == c.getCurrency())
 			return true;
 		return false;
-	}
-
-	/**
-	 * Checks a coin with its value which is equal, more or less.
-	 * 
-	 * @param coin is the coin compare with
-	 * @return 0 if equal, 1 if more, -1 if less
-	 */
-	public int compareTo(Coin coin) {
-		if (value > coin.getValue())
-			return 1;
-		else if (value < coin.getValue())
-			return -1;
-		return 0;
 	}
 
 	/**
