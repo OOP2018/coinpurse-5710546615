@@ -52,7 +52,7 @@ public class Coin implements Valuable {
 			return false;
 
 		Coin c = (Coin) arg;
-		if (value == c.getValue() && currency == c.getCurrency())
+		if (value == c.getValue() && currency.equals(c.getCurrency()))
 			return true;
 		return false;
 	}

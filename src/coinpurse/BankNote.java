@@ -64,7 +64,7 @@ public class BankNote implements Valuable {
 			return false;
 
 		BankNote b = (BankNote) arg;
-		if (value == b.getValue() && currency == b.getCurrency())
+		if (value == b.getValue() && currency.equals(b.getCurrency()))
 			return true;
 		return false;
 	}
