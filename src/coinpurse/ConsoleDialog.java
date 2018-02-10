@@ -3,9 +3,9 @@ package coinpurse;
 import java.util.Scanner;
 
 /**
- * User Interface for the Valuable Purse. This class provides simple
- * interactive dialog for inserting and removing money to/from the purse, and
- * displaying the balance.
+ * User Interface for the Valuable Purse. This class provides simple interactive
+ * dialog for inserting and removing money to/from the purse, and displaying the
+ * balance.
  */
 public class ConsoleDialog {
 	// default currency for this dialog

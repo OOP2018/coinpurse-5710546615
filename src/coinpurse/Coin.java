@@ -5,10 +5,7 @@ package coinpurse;
  * 
  * @author Visurt Anuttivong
  */
-public class Coin implements Valuable {
-
-	private double value;
-	private String currency;
+public class Coin extends Money {
 
 	/**
 	 * Initializes a new coin.
@@ -17,44 +14,7 @@ public class Coin implements Valuable {
 	 * @param currency is the currency of the coin.
 	 */
 	public Coin(double value, String currency) {
-		this.value = value;
-		this.currency = currency;
-	}
-
-	/**
-	 * Gets the value of the coin.
-	 * 
-	 * @return the value
-	 */
-	public double getValue() {
-		return value;
-	}
-
-	/**
-	 * Gets the currency of the coin.
-	 * 
-	 * @return the currency
-	 */
-	public String getCurrency() {
-		return currency;
-	}
-
-	/**
-	 * Checks an object equal or not.
-	 * 
-	 * @param arg is the object compare with
-	 * @return true if equal, false otherwise
-	 */
-	public boolean equals(Object arg) {
-		if (arg == null)
-			return false;
-		if (arg.getClass() != this.getClass())
-			return false;
-
-		Coin c = (Coin) arg;
-		if (value == c.getValue() && currency.equals(c.getCurrency()))
-			return true;
-		return false;
+		super(value, currency);
 	}
 
 	/**
@@ -63,6 +23,6 @@ public class Coin implements Valuable {
 	 * @return describe of the coin
 	 */
 	public String toString() {
-		return value + "-" + currency;
+		return getValue() + "-" + getCurrency();
 	}
 }

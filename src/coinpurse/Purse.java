@@ -91,6 +91,44 @@ public class Purse {
 	}
 
 	/**
+	 * Withdraw the requested money. Return an array of Valuable withdrawn from
+	 * purse, or return null if cannot withdraw the amount requested.
+	 * 
+	 * @param amount is the valuable to withdraw
+	 * @return array of valuable objects for money withdrawn, or null if cannot
+	 *         withdraw requested amount.
+	 */
+	public Valuable[] withdraw(Valuable amount) {
+		if (amount == null || amount.getValue() <= 0)
+			return null;
+
+		double amount_value = amount.getValue();
+		String amount_curr = amount.getCurrency();
+
+		Collections.sort(money, comp);
+
+		List<Valuable> templist = new ArrayList<Valuable>();
+
+		for (int i = count() - 1; i >= 0; i--) {
+			double value = money.get(i).getValue();
+			String currency = money.get(i).getCurrency();
+			if (amount_value >= value && amount_curr.equals(currency)) {
+				templist.add(money.get(i));
+				amount_value -= value;
+			}
+		}
+
+		if (amount_value == 0) {
+			for (int i = 0; i < templist.size(); i++)
+				money.remove(templist.get(i));
+			Valuable[] array = new Valuable[templist.size()];
+			templist.toArray(array);
+			return array;
+		}
+		return null;
+	}
+
+	/**
 	 * Withdraw the requested amount of money. Return an array of Valuable withdrawn
 	 * from purse, or return null if cannot withdraw the amount requested.
 	 * 
@@ -99,29 +137,7 @@ public class Purse {
 	 *         withdraw requested amount.
 	 */
 	public Valuable[] withdraw(double amount) {
-		if (amount <= 0)
-			return null;
-
-		Collections.sort(money, comp);
-
-		List<Valuable> templist = new ArrayList<Valuable>();
-
-		for (int i = count() - 1; i >= 0; i--) {
-			double value = money.get(i).getValue();
-			if (amount >= value) {
-				templist.add(money.get(i));
-				amount -= value;
-			}
-		}
-
-		if (amount == 0) {
-			for (int i = 0; i < templist.size(); i++)
-				money.remove(templist.get(i));
-			Valuable[] array = new Valuable[templist.size()];
-			templist.toArray(array);
-			return array;
-		}
-		return null;
+		return withdraw(new Money(amount, "Baht"));
 	}
 
 	/**
