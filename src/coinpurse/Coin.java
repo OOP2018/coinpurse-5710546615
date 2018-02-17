@@ -7,6 +7,11 @@ package coinpurse;
  */
 public class Coin extends Money {
 
+	/* The value of the coin */
+	private double modifyValue;
+	/* The currency of the coin */
+	private String modifyCurrency;
+
 	/**
 	 * Initializes a new coin.
 	 * 
@@ -23,6 +28,22 @@ public class Coin extends Money {
 	 * @return describe of the coin
 	 */
 	public String toString() {
-		return getValue() + "-" + getCurrency();
+		modify(getValue(),getCurrency());
+		return (int) modifyValue + "-" + modifyCurrency + " coin";
+	}
+
+	/**
+	 * Helper method to set and modify the value and currency for some country.
+	 * 
+	 * @param value is the value to modify
+	 * @param currency is the currency to modify
+	 */
+	public void modify(double value, String currency) {
+		modifyValue = value;
+		modifyCurrency = currency;
+		if (value < 1 && currency.equals("Ringgit")) {
+			modifyValue *= 100;
+			modifyCurrency = "Sen";
+		}
 	}
 }

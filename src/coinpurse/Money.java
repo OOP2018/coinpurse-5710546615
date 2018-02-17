@@ -6,7 +6,10 @@ package coinpurse;
  * @author Visurt Anuttivong
  */
 public class Money implements Valuable {
+	
+	/* the value of money */
 	private double value;
+	/* the currency of money */
 	private String currency;
 
 	/**

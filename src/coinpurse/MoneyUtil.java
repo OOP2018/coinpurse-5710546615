@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class MoneyUtil {
 
+	/* Counter for serial number */
+	private static long nextSerialNumber = 1000000;
+	/* A comparator for valuable */
 	private static Comparator<Valuable> comp = new ValueComparator();
 
 	/**
@@ -31,14 +34,14 @@ public class MoneyUtil {
 		vals.add(new Coin(10.0, "US Dollar"));
 		vals.add(new Coin(5.0, "Baht"));
 
-		vals.add(new BankNote(10.0, "Baht"));
-		vals.add(new BankNote(0.5, "Baht"));
-		vals.add(new BankNote(5.0, "US Dollar"));
-		vals.add(new BankNote(2.0, "Baht"));
-		vals.add(new BankNote(1.0, "Baht"));
-		vals.add(new BankNote(1.0, "US Dollar"));
-		vals.add(new BankNote(10.0, "US Dollar"));
-		vals.add(new BankNote(5.0, "Baht"));
+		vals.add(new BankNote(10.0, "Baht", nextSerialNumber++));
+		vals.add(new BankNote(0.5, "Baht", nextSerialNumber++));
+		vals.add(new BankNote(5.0, "US Dollar", nextSerialNumber++));
+		vals.add(new BankNote(2.0, "Baht", nextSerialNumber++));
+		vals.add(new BankNote(1.0, "Baht", nextSerialNumber++));
+		vals.add(new BankNote(1.0, "US Dollar", nextSerialNumber++));
+		vals.add(new BankNote(10.0, "US Dollar", nextSerialNumber++));
+		vals.add(new BankNote(5.0, "Baht", nextSerialNumber++));
 
 		List<Valuable> THB = filterByCurrency(vals, "Baht");
 		List<Valuable> US = filterByCurrency(vals, "US Dollar");

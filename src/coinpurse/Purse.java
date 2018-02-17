@@ -1,6 +1,7 @@
 package coinpurse;
 
 import java.util.List;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,7 +14,11 @@ import java.util.Comparator;
  */
 public class Purse {
 
+	/* singleton instance of MoneyFactory. */
+	private MoneyFactory factory = MoneyFactory.getInstance();
+	/* A list of valuable */
 	private List<Valuable> money;
+	/* A comparator for valuable */
 	private Comparator<Valuable> comp = new ValueComparator();
 
 	/**
@@ -26,10 +31,12 @@ public class Purse {
 	 * Create a purse with a specified capacity.
 	 * 
 	 * @param capacity is maximum number of coins you can put in purse.
+	 * @param factory is the MoneyFactory in which you are used
 	 */
-	public Purse(int capacity) {
+	public Purse(int capacity, MoneyFactory factory) {
 		this.capacity = capacity;
 		money = new ArrayList<Valuable>(capacity);
+		this.factory = factory;
 	}
 
 	/**
@@ -112,9 +119,13 @@ public class Purse {
 		for (int i = count() - 1; i >= 0; i--) {
 			double value = money.get(i).getValue();
 			String currency = money.get(i).getCurrency();
+
 			if (amount_value >= value && amount_curr.equals(currency)) {
 				templist.add(money.get(i));
-				amount_value -= value;
+				Double diff = amount_value - value;
+				DecimalFormat formatter = new DecimalFormat("0.00");
+				String diff_str = formatter.format(diff);
+				amount_value = Double.parseDouble(diff_str);
 			}
 		}
 
@@ -137,7 +148,7 @@ public class Purse {
 	 *         withdraw requested amount.
 	 */
 	public Valuable[] withdraw(double amount) {
-		return withdraw(new Money(amount, "Baht"));
+		return withdraw(new Money(amount, factory.getCurrency()));
 	}
 
 	/**

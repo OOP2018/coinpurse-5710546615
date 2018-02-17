@@ -8,8 +8,10 @@ import java.util.Scanner;
  * balance.
  */
 public class ConsoleDialog {
+	// singleton instance of MoneyFactory
+	private MoneyFactory factory;
 	// default currency for this dialog
-	public static final String CURRENCY = "Baht";
+	public static String CURRENCY = "Baht";
 	// use a single java.util.Scanner object for reading all input
 	private static Scanner console = new Scanner(System.in);
 	// Long prompt shown the first time
@@ -26,9 +28,12 @@ public class ConsoleDialog {
 	 * Initialize a new Purse dialog.
 	 * 
 	 * @param purse is the Purse to interact with.
+	 * @param factory is the MoneyFactory in which you are used
 	 */
-	public ConsoleDialog(Purse purse) {
+	public ConsoleDialog(Purse purse, MoneyFactory factory) {
 		this.purse = purse;
+		this.factory = factory;
+		this.CURRENCY = factory.getCurrency();
 	}
 
 	/** Run the user interface. */
@@ -84,9 +89,13 @@ public class ConsoleDialog {
 		while (scanline.hasNextDouble()) {
 			double value = scanline.nextDouble();
 			Valuable val = makeMoney(value);
-			System.out.printf("Deposit %s... ", val.toString());
-			boolean ok = purse.insert(val);
-			System.out.println((ok ? "ok" : "FAILED"));
+			try {
+				System.out.printf("Deposit %s... ", val.toString());
+				boolean ok = purse.insert(val);
+				System.out.println((ok ? "ok" : "FAILED"));
+			} catch (Exception e) {
+
+			}
 		}
 		if (scanline.hasNext())
 			System.out.println("Invalid input: " + scanline.next());
@@ -94,7 +103,7 @@ public class ConsoleDialog {
 	}
 
 	/**
-	 * Ask how much money (Baht) to withdraw and then do it. After withdraw, show
+	 * Ask how much money to withdraw and then do it. After withdraw, show
 	 * the values of the valuables we withdrew.
 	 */
 	public void withdrawDialog() {
@@ -126,14 +135,20 @@ public class ConsoleDialog {
 	}
 
 	/**
-	 * Make a Coin (or BankNote or whatever) using requested value.
+	 * Creating money using requested value.
 	 * 
+	 * @param value is the value of the money
 	 * @return a valuable with its value.
 	 */
 	private Valuable makeMoney(double value) {
-		if (value >= 20)
-			return new BankNote(value, CURRENCY);
-		return new Coin(value, CURRENCY);
+		Valuable valuable = null;
+		try {
+			valuable = factory.createMoney(value);
+		} catch (IllegalArgumentException ex) {
+			System.out.println("Sorry, " + value + " is not a valid amount.");
+		}
+
+		return valuable;
 	}
 
 }

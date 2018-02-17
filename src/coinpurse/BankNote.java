@@ -6,8 +6,7 @@ package coinpurse;
  * @author Visurt Anuttivong
  */
 public class BankNote extends Money {
-
-	private static long nextSerialNumber = 1000000;
+	/* The serial number of the bank note*/
 	private long serialNumber;
 
 	/**
@@ -15,19 +14,11 @@ public class BankNote extends Money {
 	 * 
 	 * @param value is the value of the bank note.
 	 * @param currency is the currency of the bank note.
+	 * @param serialNumber is the specific serial number of the bank note.
 	 */
-	public BankNote(double value, String currency) {
+	public BankNote(double value, String currency, long serialNumber) {
 		super(value, currency);
-		serialNumber = nextSerialNumber++;
-	}
-
-	/**
-	 * Gets the serial number of the bank note.
-	 * 
-	 * @return the serial number
-	 */
-	public long getSerial() {
-		return serialNumber;
+		this.serialNumber = serialNumber;
 	}
 
 	/**
@@ -36,7 +27,7 @@ public class BankNote extends Money {
 	 * @return describe of the bank note
 	 */
 	public String toString() {
-		return getValue() + "-" + getCurrency() + " note [" + serialNumber + "]";
+		return (int)getValue() + " " + getCurrency() + " note [" + serialNumber + "]";
 	}
 
 }
