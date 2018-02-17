@@ -20,6 +20,15 @@ public class BankNote extends Money {
 		super(value, currency);
 		this.serialNumber = serialNumber;
 	}
+	
+	/**
+	 * Gets the serial number of the bank note.
+	 * 
+	 * @return the serial number
+	 */
+	public long getSerial() {
+		return serialNumber;
+	}
 
 	/**
 	 * Returns a string description of the bank note contents.
