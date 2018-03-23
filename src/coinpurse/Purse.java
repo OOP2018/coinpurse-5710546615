@@ -1,10 +1,11 @@
 package coinpurse;
 
 import java.util.List;
-import java.text.DecimalFormat;
+
+import coinpurse.strategy.GreedyWithdraw;
+import coinpurse.strategy.WithdrawStrategy;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * A valuable purse contains coins or bank note. You can insert coins or bank
@@ -18,8 +19,8 @@ public class Purse {
 	private MoneyFactory factory = MoneyFactory.getInstance();
 	/* A list of valuable */
 	private List<Valuable> money;
-	/* A comparator for valuable */
-	private Comparator<Valuable> comp = new ValueComparator();
+	/* The strategy for withdrawing items. */
+	private WithdrawStrategy strategy;
 
 	/**
 	 * Capacity is maximum number of items the purse can hold. Capacity is set when
@@ -28,7 +29,7 @@ public class Purse {
 	private final int capacity;
 
 	/**
-	 * Create a purse with a specified capacity.
+	 * Create a purse with a specified capacity and set up factory and strategy.
 	 * 
 	 * @param capacity is maximum number of coins you can put in purse.
 	 * @param factory is the MoneyFactory in which you are used
@@ -37,6 +38,7 @@ public class Purse {
 		this.capacity = capacity;
 		money = new ArrayList<Valuable>(capacity);
 		this.factory = factory;
+		setWithdrawStrategy(new GreedyWithdraw());
 	}
 
 	/**
@@ -99,7 +101,8 @@ public class Purse {
 
 	/**
 	 * Withdraw the requested money. Return an array of Valuable withdrawn from
-	 * purse, or return null if cannot withdraw the amount requested.
+	 * purse, or return null if cannot withdraw the amount requested. Using
+	 * different strategy. Default is GreedyStrategy.
 	 * 
 	 * @param amount is the valuable to withdraw
 	 * @return array of valuable objects for money withdrawn, or null if cannot
@@ -109,31 +112,13 @@ public class Purse {
 		if (amount == null || amount.getValue() <= 0)
 			return null;
 
-		double amount_value = amount.getValue();
-		String amount_curr = amount.getCurrency();
+		List<Valuable> decide = strategy.withdraw(amount, money);
 
-		Collections.sort(money, comp);
-
-		List<Valuable> templist = new ArrayList<Valuable>();
-
-		for (int i = count() - 1; i >= 0; i--) {
-			double value = money.get(i).getValue();
-			String currency = money.get(i).getCurrency();
-
-			if (amount_value >= value && amount_curr.equals(currency)) {
-				templist.add(money.get(i));
-				Double diff = amount_value - value;
-				DecimalFormat formatter = new DecimalFormat("0.00");
-				String diff_str = formatter.format(diff);
-				amount_value = Double.parseDouble(diff_str);
-			}
-		}
-
-		if (amount_value == 0) {
-			for (int i = 0; i < templist.size(); i++)
-				money.remove(templist.get(i));
-			Valuable[] array = new Valuable[templist.size()];
-			templist.toArray(array);
+		if (decide != null) {
+			for (int i = 0; i < decide.size(); i++)
+				money.remove(decide.get(i));
+			Valuable[] array = new Valuable[decide.size()];
+			decide.toArray(array);
 			return array;
 		}
 		return null;
@@ -158,5 +143,14 @@ public class Purse {
 	 */
 	public String toString() {
 		return count() + " valuables with value " + getBalance();
+	}
+
+	/**
+	 * Sets the strategy to the newer one.
+	 * 
+	 * @param strategy is the strategy we want to set up
+	 */
+	public void setWithdrawStrategy(WithdrawStrategy strategy) {
+		this.strategy = strategy;
 	}
 }
