@@ -1,6 +1,7 @@
 package coinpurse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,30 +25,31 @@ public class MoneyUtil {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-		List<Valuable> vals = new ArrayList<Valuable>();
-		vals.add(new Coin(10.0, "Baht"));
-		vals.add(new Coin(0.5, "Baht"));
-		vals.add(new Coin(5.0, "US Dollar"));
-		vals.add(new Coin(2.0, "Baht"));
-		vals.add(new Coin(1.0, "Baht"));
-		vals.add(new Coin(1.0, "US Dollar"));
-		vals.add(new Coin(10.0, "US Dollar"));
-		vals.add(new Coin(5.0, "Baht"));
+		// Testing Max with String
+		String max1 = max("dog", "zebra", "cat");
+		System.out.println(max1); // return zebra
 
-		vals.add(new BankNote(10.0, "Baht", nextSerialNumber++));
-		vals.add(new BankNote(0.5, "Baht", nextSerialNumber++));
-		vals.add(new BankNote(5.0, "US Dollar", nextSerialNumber++));
-		vals.add(new BankNote(2.0, "Baht", nextSerialNumber++));
-		vals.add(new BankNote(1.0, "Baht", nextSerialNumber++));
-		vals.add(new BankNote(1.0, "US Dollar", nextSerialNumber++));
-		vals.add(new BankNote(10.0, "US Dollar", nextSerialNumber++));
-		vals.add(new BankNote(5.0, "Baht", nextSerialNumber++));
+		// Testing Max with Integer
+		int max2 = max(1, 5, 10);
+		System.out.println(max2); // return 10
 
-		List<Valuable> THB = filterByCurrency(vals, "Baht");
-		List<Valuable> US = filterByCurrency(vals, "US Dollar");
+		// Testing Max with Money
+		Money m1 = new BankNote(100, "Baht", nextSerialNumber++);
+		Money m2 = new BankNote(500, "Baht", nextSerialNumber++);
+		Money m3 = new Coin(20, "Baht");
+		Money max = max(m1, m2, m3);
+		System.out.println(max); // return m2
 
-		sortCoins(THB);
-		sortCoins(US);
+		// Testing sortMoney with bank note
+		List<BankNote> list = new ArrayList<BankNote>();
+		list.add(new BankNote(10.0, "USD", nextSerialNumber++));
+		list.add(new BankNote(500.0, "Baht", nextSerialNumber++));
+		sortMoney(list); // sorted money by currency before value
+
+		// Testing filterByCurrency with coin
+		List<Coin> coins = Arrays.asList(new Coin(5, "Baht"), new Coin(0.1, "Ringgit"), new Coin(5, "Cent"));
+		List<Coin> result = MoneyUtil.filterByCurrency(coins, "Baht"); // Error
+		System.out.println(result); // return 5 baht coin
 	}
 
 	/**
@@ -58,9 +60,9 @@ public class MoneyUtil {
 	 * @param currency the currency that select
 	 * @return a list of valuables that already filtered
 	 */
-	public static List<Valuable> filterByCurrency(List<Valuable> vals, String currency) {
-		List<Valuable> templist = new ArrayList<Valuable>();
-		for (Valuable val : vals)
+	public static <E extends Valuable> List<E> filterByCurrency(List<? extends E> vals, String currency) {
+		List<E> templist = new ArrayList<E>();
+		for (E val : vals)
 			if (val.getCurrency().equals(currency))
 				templist.add(val);
 		return templist;
@@ -69,20 +71,40 @@ public class MoneyUtil {
 	/**
 	 * Sorts a List of valuables and print the result on the console.
 	 * 
-	 * @param vals is a List of valuables that is/isn't sort yet
+	 * @param money is a List of valuables that is/isn't sort yet
 	 */
-	public static void sortCoins(List<Valuable> vals) {
-		Collections.sort(vals, comp);
-		printCoins(vals);
+	public static void sortMoney(List<? extends Valuable> money) {
+		Collections.sort(money, comp);
+		printMoney(money);
 	}
 
 	/**
 	 * Prints each of elements in a List to console.
 	 * 
-	 * @param vals is a List of valuables to print out
+	 * @param money is a List of valuables to print out
 	 */
-	public static void printCoins(List<Valuable> vals) {
-		for (Valuable val : vals)
+	public static void printMoney(List<? extends Valuable> money) {
+		for (Valuable val : money)
 			System.out.println(val);
+	}
+
+	/**
+	 * Return the larger argument, based on sort order, using the objects' own
+	 * compareTo method for comparing.
+	 * 
+	 * @param args one or more Comparable objects to compare.
+	 * @return the argument that would be last if sorted the elements.
+	 * @throws IllegalArgumentException if no arguments given.
+	 */
+	public static <E extends Comparable<? super E>> E max(E... args) {
+		try {
+			E max = args[0];
+			for (E each : args)
+				if (each.compareTo(max) > 0)
+					max = each;
+			return max;
+		} catch (NullPointerException ex) {
+			throw new IllegalArgumentException();
+		}
 	}
 }
